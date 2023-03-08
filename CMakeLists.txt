@@ -21,7 +21,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(CPP_GRPC C CXX)
 
-set(WORKSPACE "/Users/sq_luozhihong/data/temp/cpp_grpc")
+string(REGEX REPLACE "/$" "" WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
+
 include(./cmake/common.cmake)
 
 file(GLOB_RECURSE PROTOS protos/*.proto)

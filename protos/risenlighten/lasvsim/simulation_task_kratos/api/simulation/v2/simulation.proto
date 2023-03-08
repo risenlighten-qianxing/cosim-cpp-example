@@ -10,20 +10,20 @@ import "google/api/field_behavior.proto";
 /*
   联合仿真服务
   以下是错误码定义:
-	StartErrorCode    = -100
-	TaskNotExistCode  = -200
-	StopErrorCode     = -300
-	MapErrorCode      = -400
-	NextStepErrorCode = -500
-	VehicleErrorCode  = -600
-	ErrorCode         = -800
+        StartErrorCode    = -100
+        TaskNotExistCode  = -200
+        StopErrorCode     = -300
+        MapErrorCode      = -400
+        NextStepErrorCode = -500
+        VehicleErrorCode  = -600
+        ErrorCode         = -800
 
-	仿真状态码:
-	0    : 待开始
-	1-99 : 运行中
-	100  : 已完成
-	-1   : 运行错误
-	-100 : 任务非正常终止
+        仿真状态码:
+        0    : 待开始
+        1-99 : 运行中
+        100  : 已完成
+        -1   : 运行错误
+        -100 : 任务非正常终止
 */
 service SimulationV2 {
   // 开始任务, 任务初始化
@@ -173,7 +173,9 @@ message StartSimulationRes {
   ErrorMsg error = 2;
 }
 
-message NextStepReq { string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ]; }
+message NextStepReq {
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+}
 
 message SimulationState {
   int32 progress = 1;
@@ -185,28 +187,36 @@ message NextStepRes {
   ErrorMsg error = 2;
 }
 
-message ResetSimulationReq { string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ]; }
+message ResetSimulationReq {
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+}
 
 message ResetSimulationRes {
   string simulation_id = 1;
   ErrorMsg error = 2;
 }
 
-message StopSimulationReq { string simulation_id = 2[ (google.api.field_behavior) = REQUIRED ]; }
+message StopSimulationReq {
+  string simulation_id = 2 [ (google.api.field_behavior) = REQUIRED ];
+}
 
 message StopSimulationRes {
   SimulationState state = 1;
   ErrorMsg error = 2;
 }
 
-message GetMapReq { string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ]; }
+message GetMapReq {
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+}
 
 message GetMapRes {
   ErrorMsg error = 1;
   Map map = 2;
 }
 
-message GetAllTrafficPartReq { string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ]; }
+message GetAllTrafficPartReq {
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+}
 
 message GetAllTrafficPartRes {
   ErrorMsg error = 1;
@@ -214,8 +224,8 @@ message GetAllTrafficPartRes {
 }
 
 message SetVehicleControlReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
-  string vehicle_id = 2[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string vehicle_id = 2 [ (google.api.field_behavior) = REQUIRED ];
   // 纵向加速度
   double lon_acc = 3;
   // 方向盘转角
@@ -227,10 +237,9 @@ message SetVehicleControlRes {
   Vehicle vehicle = 2;
 }
 
-
 message GetVehicleReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
-  string vehicle_id = 2[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string vehicle_id = 2 [ (google.api.field_behavior) = REQUIRED ];
 }
 
 message GetVehicleRes {
@@ -238,61 +247,51 @@ message GetVehicleRes {
   Vehicle vehicle = 2;
 }
 
-
 message GetResultsReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
 }
 
 message GetResultsRes {
   ErrorMsg error = 1;
   map<string, arrays> results = 2;
 
-  message item {
-    repeated double r = 1;
-  }
+  message item { repeated double r = 1; }
 
-  message arrays {
-    repeated item arr = 1;
-  }
+  message arrays { repeated item arr = 1; }
 }
 
-
 message GetLinkReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
-  string link_id = 2[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string link_id = 2 [ (google.api.field_behavior) = REQUIRED ];
 }
 message GetLinkRes {
   ErrorMsg error = 1;
   Link link = 2;
 }
 
-
 message GetLaneReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
-  string lane_id = 2[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string lane_id = 2 [ (google.api.field_behavior) = REQUIRED ];
 }
 message GetLaneRes {
   ErrorMsg error = 1;
   Lane lane = 2;
 }
 
-
 message GetJunctionReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
-  string junction_id = 2[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string junction_id = 2 [ (google.api.field_behavior) = REQUIRED ];
 }
 message GetJunctionRes {
   ErrorMsg error = 1;
   Junction junction = 2;
 }
 
-
 message GetSegmentReq {
-  string simulation_id = 1[ (google.api.field_behavior) = REQUIRED ];
-  string segment_id = 2[ (google.api.field_behavior) = REQUIRED ];
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string segment_id = 2 [ (google.api.field_behavior) = REQUIRED ];
 }
 message GetSegmentRes {
   ErrorMsg error = 1;
   Segment segment = 2;
 }
-
