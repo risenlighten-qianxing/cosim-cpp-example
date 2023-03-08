@@ -3,7 +3,7 @@
         {
             "name": "Mac",
             "includePath": [
-                "/Users/sq_luozhihong/data/temp/cpp_grpc/cmake/build",
+                "${workspaceFolder}/cmake/build",
                 "/Users/sq_luozhihong/.local/include"
                 // "${workspaceFolder}/include"
             ],

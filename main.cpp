@@ -28,7 +28,7 @@ class SimulationClient {
     StartSimulationReq request;
     risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::StartSimulationRes response;
     Status status = stub_->Start(&context, request, &response);
-    if (!CheckError(status, response.error())) {
+    if (CheckError(status, response.error())) {
         return;
     }
 
@@ -38,7 +38,8 @@ class SimulationClient {
         get_vehicle_request.set_simulation_id(response.simulation_id());
         get_vehicle_request.set_vehicle_id("ego");
         risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleRes vehicle_response;
-        status = stub_->GetVehicle(&context, get_vehicle_request, &vehicle_response);
+        ClientContext getVehicleCtx;
+        status = stub_->GetVehicle(&getVehicleCtx, get_vehicle_request, &vehicle_response);
         if (CheckError(status, vehicle_response.error())) {
             return;
         }
@@ -50,7 +51,8 @@ class SimulationClient {
         set_control_request.set_lon_acc(1);
         set_control_request.set_ste_wheel(1);
         risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::SetVehicleControlRes vehicle_control_response;
-        status = stub_->SetVehicleControl(&context, set_control_request, &vehicle_control_response);
+        ClientContext setVehicleControlCtx;
+        status = stub_->SetVehicleControl(&setVehicleControlCtx, set_control_request, &vehicle_control_response);
         if (CheckError(status, vehicle_control_response.error())) {
             return;
         }
@@ -59,8 +61,10 @@ class SimulationClient {
         NextStepReq next_step_request;
         next_step_request.set_simulation_id(response.simulation_id());
         risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::NextStepRes step_response;
-        status = stub_->NextStep(&context, next_step_request, &step_response);
+        ClientContext nextStepCtx;
+        status = stub_->NextStep(&nextStepCtx, next_step_request, &step_response);
         if (CheckError(status, step_response.error())) {
+            std::cout << "仿真结束，状态：" << step_response.state().msg() << std::endl;
             return;
         }
 
@@ -75,8 +79,9 @@ class SimulationClient {
     GetResultsReq get_results_request;
     get_results_request.set_simulation_id(response.simulation_id());
     risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetResultsRes results_response;
-    status = stub_->GetResults(&context, get_results_request, &results_response);
-    if (!CheckError(status, results_response.error())) {
+    ClientContext getResultsCtx;
+    status = stub_->GetResults(&getResultsCtx, get_results_request, &results_response);
+    if (!CheckError(status, results_response.error())) { // 获取成功
         // std::cout << "仿真结束，结果：" << results_response.results() << std::endl;
     }
   }
@@ -85,7 +90,7 @@ class SimulationClient {
   std::unique_ptr<SimulationV2::Stub> stub_;
   bool CheckError(const Status& status,risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::ErrorMsg errmsg) {
     if (errmsg.code() != 0) {
-        std::cerr << "Error: " << status.error_message() << std::endl;
+        std::cerr << "Error: " << errmsg.msg() << std::endl;
         return true;
     }
     return false;
