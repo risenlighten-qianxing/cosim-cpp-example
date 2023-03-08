@@ -1,6 +1,10 @@
 # gRPC C++ Hello World Example
-
-You can find a complete set of instructions for building gRPC and running the
-Hello World app in the [C++ Quick Start][].
-
-[C++ Quick Start]: https://grpc.io/docs/languages/cpp/quickstart
+## grpc install
+[grpc c++ quick start](https://grpc.io/docs/languages/cpp/quickstart/)
+## build
+```
+mkdir -p cmake/build
+pushd cmake/build
+cmake -DCMAKE_PREFIX_PATH=$MY_INSTALL_DIR ../..
+make -j 4
+```
