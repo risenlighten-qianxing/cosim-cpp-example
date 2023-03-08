@@ -10,7 +10,7 @@ using grpc::ClientContext;
 using grpc::Status;
 using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::SimulationV2;
 using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::StartSimulationReq;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleEgoReq;
+using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleReq;
 using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::SetVehicleControlReq;
 using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::NextStepReq;
 using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetResultsReq;
@@ -34,11 +34,11 @@ class SimulationClient {
 
     while (true) {
         // 获取自车以及自车的周车列表
-        GetVehicleEgoReq get_vehicle_request;
+        GetVehicleReq get_vehicle_request;
         get_vehicle_request.set_simulation_id(response.simulation_id());
         get_vehicle_request.set_vehicle_id("ego");
-        risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleEgoRes vehicle_response;
-        status = stub_->GetVehicleEgo(&context, get_vehicle_request, &vehicle_response);
+        risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleRes vehicle_response;
+        status = stub_->GetVehicle(&context, get_vehicle_request, &vehicle_response);
         if (CheckError(status, vehicle_response.error())) {
             return;
         }
