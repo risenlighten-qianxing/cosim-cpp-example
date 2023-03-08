@@ -94,7 +94,7 @@ class SimulationClient {
 
 int main(int argc, char** argv) {
   SimulationClient client(
-      grpc::CreateChannel("localhost:9002", grpc::SslCredentials(grpc::SslCredentialsOptions())));
+      grpc::CreateChannel("localhost:9002", grpc::InsecureChannelCredentials()));
   client.Run();
   return 0;
 }
