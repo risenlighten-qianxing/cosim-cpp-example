@@ -3,7 +3,8 @@
         {
             "name": "Mac",
             "includePath": [
-                "/Users/sq_luozhihong/data/temp/cpp_grpc/include",
+                "/Users/sq_luozhihong/data/temp/cpp_grpc/cmake/build",
+                "/Users/sq_luozhihong/.local/include"
                 // "${workspaceFolder}/include"
             ],
             "macFrameworkPath": [

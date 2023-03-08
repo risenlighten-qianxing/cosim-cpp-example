@@ -19,68 +19,62 @@
 
 cmake_minimum_required(VERSION 3.8)
 
-project(HelloWorld C CXX)
+project(CPP_GRPC C CXX)
 
+set(WORKSPACE "/Users/sq_luozhihong/data/temp/cpp_grpc")
 include(./cmake/common.cmake)
 
-# Proto file
-get_filename_component(hw_proto "./protos/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/hdmap.proto" ABSOLUTE)
-get_filename_component(hw2_proto "./protos/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.proto" ABSOLUTE)
-get_filename_component(hw_proto_path "${hw_proto}" PATH)
-get_filename_component(hw2_proto_path "${hw2_proto}" PATH)
+file(GLOB_RECURSE PROTOS protos/*.proto)
+foreach(PROTOFILE ${PROTOS})
+  get_filename_component(FIL_WE ${PROTOFILE} NAME_WE)
+  STRING(REGEX REPLACE "^${WORKSPACE}/protos/" "" RELATIVEPATH ${PROTOFILE}) # 移除字符串前缀
+  string(REGEX REPLACE ".proto" "" RELATIVENAME ${RELATIVEPATH}) # 移除字符串后缀
 
-# Generated sources
-set(hw_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/hdmap.pb.cc")
-set(hw_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/hdmap.pb.h")
-set(hw_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/hdmap.grpc.pb.cc")
-set(hw_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/hdmap.grpc.pb.h")
-# Generated sources
-set(hw2_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.pb.cc")
-set(hw2_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.pb.h")
-set(hw2_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.grpc.pb.cc")
-set(hw2_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.grpc.pb.h")
-add_custom_command(
-      OUTPUT "${hw_proto_srcs}" "${hw_proto_hdrs}" "${hw_grpc_srcs}" "${hw_grpc_hdrs}" "${hw2_proto_srcs}" "${hw2_proto_hdrs}" "${hw2_grpc_srcs}" "${hw2_grpc_hdrs}"
+  set(proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/${RELATIVENAME}.pb.cc")
+  set(proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/${RELATIVENAME}.pb.h")
+  set(grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/${RELATIVENAME}.grpc.pb.cc")
+  set(grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/${RELATIVENAME}.grpc.pb.h")
+
+  # 生成
+  add_custom_command(
+      OUTPUT "${proto_srcs}" "${proto_hdrs}" "${grpc_srcs}" "${grpc_hdrs}" 
       COMMAND ${_PROTOBUF_PROTOC}
       ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
         --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
-        --proto_path "/Users/sq_luozhihong/data/temp/cpp_grpc/protos"
-        -I "${hw_proto_path}"
-        -I "${hw2_proto_path}"
+        --proto_path "${WORKSPACE}/protos"
         --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
-        "${hw_proto}" "${hw2_proto}"
-      DEPENDS "${hw_proto}" "${hw2_proto}")
+        "${PROTOFILE}"
+      DEPENDS "${PROTOFILE}")
+
+  string(REGEX REPLACE "/" "_" LIB_NAME ${RELATIVENAME}) # 移除字符串后缀
+
+  # add_executable后的target_link_libraries需要
+  add_library(${LIB_NAME}
+    ${grpc_srcs}
+    ${grpc_hdrs}
+    ${proto_srcs}
+    ${proto_hdrs})
+  target_link_libraries(${LIB_NAME}
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF})
+endforeach()
 
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
-
-# hw_grpc_proto
-add_library(hw_grpc_proto
-  ${hw_grpc_srcs}
-  ${hw_grpc_hdrs}
-  ${hw_proto_srcs}
-  ${hw_proto_hdrs})
-target_link_libraries(hw_grpc_proto
-  ${_REFLECTION}
-  ${_GRPC_GRPCPP}
-  ${_PROTOBUF_LIBPROTOBUF})
-# hw_grpc_proto
-add_library(hw2_grpc_proto
-  ${hw2_grpc_srcs}
-  ${hw2_grpc_hdrs}
-  ${hw2_proto_srcs}
-  ${hw2_proto_hdrs})
-target_link_libraries(hw2_grpc_proto
-  ${_REFLECTION}
-  ${_GRPC_GRPCPP}
-  ${_PROTOBUF_LIBPROTOBUF})
 
 # Targets greeter_[async_](client|server)
 foreach(_target
   main)
   add_executable(${_target} "${_target}.cpp")
   target_link_libraries(${_target}
-    hw_grpc_proto
+    google_api_annotations
+    google_api_client
+    google_api_field_behavior
+    google_api_http
+    google_api_httpbody
+    risenlighten_lasvsim_simulation_task_kratos_api_simulation_v2_hdmap
+    risenlighten_lasvsim_simulation_task_kratos_api_simulation_v2_simulation
     absl::flags
     absl::flags_parse
     ${_REFLECTION}
