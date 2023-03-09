@@ -2,28 +2,64 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "cppbuild",
-            "label": "C/C++: g++ build active file",
-            "command": "g++",
+            "label": "cmake",
+            "command": "cmake",
             "args": [
-                "-std=c++17",
-                "-fdiagnostics-color=always",
-                "-stdlib=libc++",
-                "-g",
-                "/Users/sq_luozhihong/data/temp/cpp_grpc/main.cpp",
-                "-I/usr/local/protobuf/include",
-                "-I/Users/sq_luozhihong/.local/include",
-                "-I${workspaceFolder}/cmake/build",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "-DCMAKE_BUILD_TYPE=Debug",
+                // "-DCMAKE_PREFIX_PATH=${MY_INSTALL_DIR}",
+                "../.."
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}/cmake/build"
             },
-            "problemMatcher": [
-                "$gcc"
+        },
+        {
+            "label": "make",
+            "command": "make",
+            "args": [
+                "-j",
+                "4"
             ],
-            "group": "build"
+            "options": {
+                "cwd": "${workspaceFolder}/cmake/build"
+            },
+        },
+        {
+            "label": "CMake Build",
+            "dependsOn": [
+                "cmake",
+                "make"
+            ]
+        },
+        {
+            "label": "cmake.build",
+            "command": "cmake",
+            "args": [
+                "-DCMAKE_BUILD_TYPE=Debug",
+                // "-DCMAKE_PREFIX_PATH=${MY_INSTALL_DIR}",
+                "../.."
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/cmake/build"
+            },
+        },
+        {
+            "label": "make.build",
+            "command": "make",
+            "args": [
+                "-j",
+                "4"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/cmake/build"
+            },
+        },
+        {
+            "label": "CMake Build.build",
+            "dependsOn": [
+                "cmake.build",
+                "make.build"
+            ]
         }
     ]
 }
