@@ -1,10 +1,9 @@
 syntax = "proto3";
 
-package risenlighten.lasvsim.simulation_task_kratos.api.simulation.v2;
+package risenlighten.lasvsim.process_task.api.cosim.v1;
+option go_package = "git.risenlighten.com/lasvsim/process_task/api/cosim/v1;cosimv1";
 
-option go_package = "git.risenlighten.com/lasvsim/simulation_task_kratos/api/simulation/v2;v2";
-
-import "risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/hdmap.proto";
+import "risenlighten/lasvsim/process_task/api/cosim/v1/hdmap.proto";
 import "google/api/field_behavior.proto";
 
 /*
@@ -25,7 +24,7 @@ import "google/api/field_behavior.proto";
         -1   : 运行错误
         -100 : 任务非正常终止
 */
-service SimulationV2 {
+service Cosim {
   // 开始任务, 任务初始化
   rpc Start(StartSimulationReq) returns (StartSimulationRes);
   // 执行仿真步骤
@@ -157,6 +156,10 @@ message Map {
   map<string, Crosswalk> crosswalk_map = 5;
   // StopLineMap
   map<string, Stopline> stop_line_map = 6;
+  // TrafficLight
+  map<string, TrafficLight> traffic_lights = 7;
+  // TrafficSign
+  map<string, TrafficSign> traffic_signs = 8;
 }
 
 message StartSimulationReq {
@@ -166,6 +169,8 @@ message StartSimulationReq {
   Position origin = 2;
   // 结束点信息
   Position destination = 3;
+  // 任务ID
+  uint64 task_id = 4;
 }
 
 message StartSimulationRes {

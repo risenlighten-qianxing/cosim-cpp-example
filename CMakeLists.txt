@@ -74,8 +74,8 @@ foreach(_target
     google_api_field_behavior
     google_api_http
     google_api_httpbody
-    risenlighten_lasvsim_simulation_task_kratos_api_simulation_v2_hdmap
-    risenlighten_lasvsim_simulation_task_kratos_api_simulation_v2_simulation
+    risenlighten_lasvsim_process_task_api_cosim_v1_hdmap
+    risenlighten_lasvsim_process_task_api_cosim_v1_simulation
     absl::flags
     absl::flags_parse
     ${_REFLECTION}

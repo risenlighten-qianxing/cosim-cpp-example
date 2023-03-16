@@ -2,23 +2,23 @@
 #include <memory>
 #include <string>
 #include <grpcpp/grpcpp.h>
-#include "risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.pb.h"
-#include "risenlighten/lasvsim/simulation_task_kratos/api/simulation/v2/simulation.grpc.pb.h"
+#include "risenlighten/lasvsim/process_task/api/cosim/v1/simulation.pb.h"
+#include "risenlighten/lasvsim/process_task/api/cosim/v1/simulation.grpc.pb.h"
 
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::SimulationV2;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::StartSimulationReq;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleReq;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::SetVehicleControlReq;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::NextStepReq;
-using risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetResultsReq;
+using risenlighten::lasvsim::process_task::api::cosim::v1::Cosim;
+using risenlighten::lasvsim::process_task::api::cosim::v1::StartSimulationReq;
+using risenlighten::lasvsim::process_task::api::cosim::v1::GetVehicleReq;
+using risenlighten::lasvsim::process_task::api::cosim::v1::SetVehicleControlReq;
+using risenlighten::lasvsim::process_task::api::cosim::v1::NextStepReq;
+using risenlighten::lasvsim::process_task::api::cosim::v1::GetResultsReq;
 
 class SimulationClient {
  public:
   SimulationClient(std::shared_ptr<Channel> channel)
-      : stub_(SimulationV2::NewStub(channel)) {}
+      : stub_(Cosim::NewStub(channel)) {}
 
   void Run() {
     // 创建一个上下文对象
@@ -26,7 +26,8 @@ class SimulationClient {
 
     // 调用 Start 方法
     StartSimulationReq request;
-    risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::StartSimulationRes response;
+    request.set_task_id(317);
+    risenlighten::lasvsim::process_task::api::cosim::v1::StartSimulationRes response;
     Status status = stub_->Start(&context, request, &response);
     if (CheckError(status, response.error())) {
         return;
@@ -37,7 +38,7 @@ class SimulationClient {
         GetVehicleReq get_vehicle_request;
         get_vehicle_request.set_simulation_id(response.simulation_id());
         get_vehicle_request.set_vehicle_id("ego");
-        risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetVehicleRes vehicle_response;
+        risenlighten::lasvsim::process_task::api::cosim::v1::GetVehicleRes vehicle_response;
         ClientContext getVehicleCtx;
         status = stub_->GetVehicle(&getVehicleCtx, get_vehicle_request, &vehicle_response);
         if (CheckError(status, vehicle_response.error())) {
@@ -50,7 +51,7 @@ class SimulationClient {
         set_control_request.set_vehicle_id("ego");
         set_control_request.set_lon_acc(1);
         set_control_request.set_ste_wheel(1);
-        risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::SetVehicleControlRes vehicle_control_response;
+        risenlighten::lasvsim::process_task::api::cosim::v1::SetVehicleControlRes vehicle_control_response;
         ClientContext setVehicleControlCtx;
         status = stub_->SetVehicleControl(&setVehicleControlCtx, set_control_request, &vehicle_control_response);
         if (CheckError(status, vehicle_control_response.error())) {
@@ -60,7 +61,7 @@ class SimulationClient {
         // 执行仿真的下一步
         NextStepReq next_step_request;
         next_step_request.set_simulation_id(response.simulation_id());
-        risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::NextStepRes step_response;
+        risenlighten::lasvsim::process_task::api::cosim::v1::NextStepRes step_response;
         ClientContext nextStepCtx;
         status = stub_->NextStep(&nextStepCtx, next_step_request, &step_response);
         if (CheckError(status, step_response.error())) {
@@ -78,7 +79,7 @@ class SimulationClient {
     // 获取仿真结果
     GetResultsReq get_results_request;
     get_results_request.set_simulation_id(response.simulation_id());
-    risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::GetResultsRes results_response;
+    risenlighten::lasvsim::process_task::api::cosim::v1::GetResultsRes results_response;
     ClientContext getResultsCtx;
     status = stub_->GetResults(&getResultsCtx, get_results_request, &results_response);
     if (!CheckError(status, results_response.error())) { // 获取成功
@@ -87,8 +88,8 @@ class SimulationClient {
   }
 
  private:
-  std::unique_ptr<SimulationV2::Stub> stub_;
-  bool CheckError(const Status& status,risenlighten::lasvsim::simulation_task_kratos::api::simulation::v2::ErrorMsg errmsg) {
+  std::unique_ptr<Cosim::Stub> stub_;
+  bool CheckError(const Status& status,risenlighten::lasvsim::process_task::api::cosim::v1::ErrorMsg errmsg) {
     if (errmsg.code() != 0) {
         std::cerr << "Error: " << errmsg.msg() << std::endl;
         return true;
