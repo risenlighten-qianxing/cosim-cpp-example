@@ -207,6 +207,41 @@ message TrafficLight {
   repeated string Traffic_light_pole_ids = 4;
 }
 
+// 路口内两条车道的连接
+message Connection {
+  uint64 id = 1;
+  uint64 map_id = 2;
+
+  string connection_id = 3;
+  // 所属路口 id
+  string junction_id = 4;
+  // 所属 lane id
+  string movement_id = 5;
+  // 入路口 lane id
+  string upstream_lane_id = 6;
+  // 出路口 lane id
+  string downstream_lane_id = 7;
+  // 车辆行驶路径
+  repeated Point path = 8;
+}
+
+// 流向
+message Movement {
+  uint64 id = 1;
+  uint64 map_id = 2;
+
+  string movement_id = 3;
+  // 入路口link id
+  string upstream_link_id = 4;
+  // 出路口link id
+  string downstream_link_id = 5;
+
+  // junction id
+  string junction_id = 6;
+  // 流向
+  string flow_direction = 7;
+}
+
 message HdTrafficMap {
   repeated Junction junctions = 1;
   repeated Segment segments = 2;

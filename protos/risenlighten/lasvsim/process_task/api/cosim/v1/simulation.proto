@@ -3,8 +3,14 @@ syntax = "proto3";
 package risenlighten.lasvsim.process_task.api.cosim.v1;
 option go_package = "git.risenlighten.com/lasvsim/process_task/api/cosim/v1;cosimv1";
 
-import "risenlighten/lasvsim/process_task/api/cosim/v1/hdmap.proto";
+import "google/api/annotations.proto";
+// the validate rules:
+// https://github.com/envoyproxy/protoc-gen-validate
+import "validate/validate.proto";
 import "google/api/field_behavior.proto";
+import "openapi/v3/annotations.proto";
+import "google/protobuf/empty.proto";
+import "risenlighten/lasvsim/process_task/api/cosim/v1/hdmap.proto";
 
 /*
   联合仿真服务
@@ -26,35 +32,166 @@ import "google/api/field_behavior.proto";
 */
 service Cosim {
   // 开始任务, 任务初始化
-  rpc Start(StartSimulationReq) returns (StartSimulationRes);
+  rpc Start(StartSimulationReq) returns (StartSimulationRes) {
+    option (google.api.http) = {
+      post : "/cosim/start"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "开始仿真"
+    };
+  }
   // 执行仿真步骤
-  rpc NextStep(NextStepReq) returns (NextStepRes);
+  rpc NextStep(NextStepReq) returns (NextStepRes) {
+    option (google.api.http) = {
+      post : "/cosim/nextstep"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "执行仿真步骤"
+    };
+  }
   // 重置仿真
-  rpc ResetSimulation(ResetSimulationReq) returns (ResetSimulationRes);
+  rpc ResetSimulation(ResetSimulationReq) returns (ResetSimulationRes) {
+    option (google.api.http) = {
+      post : "/cosim/reset"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "重置仿真"
+    };
+  }
   // 强制结束仿真
-  rpc Stop(StopSimulationReq) returns (StopSimulationRes);
+  rpc Stop(StopSimulationReq) returns (StopSimulationRes) {
+    option (google.api.http) = {
+      post : "/cosim/stop"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "强制结束仿真"
+    };
+  }
 
   // 获取全量地图
-  rpc GetMap(GetMapReq) returns (GetMapRes);
+  rpc GetMap(GetMapReq) returns (GetMapRes) {
+    option (google.api.http) = {
+      get : "/cosim/allmap"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "获取全量地图"
+    };
+  }
   // 获取全量交通流信息(车辆)
-  rpc GetAllTrafficPart(GetAllTrafficPartReq) returns (GetAllTrafficPartRes);
+  rpc GetAllTrafficPart(GetAllTrafficPartReq) returns (GetAllTrafficPartRes) {
+    option (google.api.http) = {
+      get : "/cosim/allmap"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "获取全量地图"
+    };
+  }
 
   // 修改车辆状态, lon_acc:纵向加速度, ste_wheel: 方向盘转速
-  rpc SetVehicleControl(SetVehicleControlReq) returns (SetVehicleControlRes);
+  rpc SetVehicleControl(SetVehicleControlReq) returns (SetVehicleControlRes) {
+    option (google.api.http) = {
+      post : "/cosim/set_vehicle_control"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "修改车辆状态, lon_acc:纵向加速度, ste_wheel: 方向盘转速"
+    };
+  }
   // 根据id获取自测车辆信息
-  rpc GetVehicle(GetVehicleReq) returns (GetVehicleRes);
+  rpc GetVehicle(GetVehicleReq) returns (GetVehicleRes) {
+    option (google.api.http) = {
+      post : "/cosim/get_vehicle"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "根据id获取自测车辆信息与周车"
+    };
+  }
 
   // 获取仿真结果数据 map<string, [][]float64> 多层嵌套结构
-  rpc GetResults(GetResultsReq) returns (GetResultsRes);
+  rpc GetResults(GetResultsReq) returns (GetResultsRes) {
+    option (google.api.http) = {
+      get : "/cosim/result"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "获取仿真结果数据 map<string, [][]float64> 多层嵌套结构"
+    };
+  }
 
   // 根据LinkID获取link信息
-  rpc GetLink(GetLinkReq) returns (GetLinkRes);
+  rpc GetLink(GetLinkReq) returns (GetLinkRes) {
+    option (google.api.http) = {
+      get : "/cosim/link"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "根据LinkID获取link信息"
+    };
+  }
   // 根据LaneID获取lane信息
-  rpc GetLane(GetLaneReq) returns (GetLaneRes);
+  rpc GetLane(GetLaneReq) returns (GetLaneRes) {
+    option (google.api.http) = {
+      get : "/cosim/lane"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "根据LaneID获取lane信息"
+    };
+  }
   // 根据junctionID获取junction信息
-  rpc GetJunction(GetJunctionReq) returns (GetJunctionRes);
+  rpc GetJunction(GetJunctionReq) returns (GetJunctionRes) {
+    option (google.api.http) = {
+      get : "/cosim/junction"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "根据junctionID获取junction信息"
+    };
+  }
   // 根据segmentID获取segment信息
-  rpc GetSegment(GetSegmentReq) returns (GetSegmentRes);
+  rpc GetSegment(GetSegmentReq) returns (GetSegmentRes) {
+    option (google.api.http) = {
+      get : "/cosim/segment"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.0.0"
+      summary : "根据segmentID获取segment信息"
+    };
+  }
+  // 获取车辆Id列表
+  rpc GetVehicleIdList(GetVehicleIdListReq) returns (GetVehicleIdListRes) {
+    option (google.api.http) = {
+      get : "/cosim/get_vehicle_id_list"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.1.0"
+      summary : "获取车辆Id列表"
+    };
+  }
+  // 修改车辆信息
+  rpc UpdateVehicleInfo(UpdateVehicleInfoReq) returns (UpdateVehicleInfoRes) {
+    option (google.api.http) = {
+      put : "/cosim/vehicle"
+      body : "*"
+    };
+    option (openapi.v3.operation) = {
+      tags : "V1.3.1"
+      summary : "修改车辆信息"
+    };
+  }
 }
 
 message ErrorMsg {
@@ -116,6 +253,9 @@ message MovingInfo {
   double w_acc = 8;
 }
 
+// 静态路径
+message StaticPath { repeated Point point = 1; }
+
 // 动态交通参与对象
 message MovingObj {
   string id = 1;
@@ -125,6 +265,8 @@ message MovingObj {
   MovingInfo moving_info = 3;
   // 运动物体类型，如vehicle, bicycle, pedestrian等
   string type = 4;
+  // 静态路径
+  repeated StaticPath static_path = 5;
 }
 
 // 自测车辆
@@ -160,7 +302,13 @@ message Map {
   map<string, TrafficLight> traffic_lights = 7;
   // TrafficSign
   map<string, TrafficSign> traffic_signs = 8;
+  // Connection
+  map<string, Connections> connection_map = 9;
+  // Movement
+  map<string, Movement> movement_map = 10;
 }
+
+message Connections { map<string, Connection> connections = 1; }
 
 message StartSimulationReq {
   // 地图ID
@@ -171,6 +319,8 @@ message StartSimulationReq {
   Position destination = 3;
   // 任务ID
   uint64 task_id = 4;
+  // 剧本ID
+  uint64 record_id = 5;
 }
 
 message StartSimulationRes {
@@ -299,4 +449,27 @@ message GetSegmentReq {
 message GetSegmentRes {
   ErrorMsg error = 1;
   Segment segment = 2;
+}
+
+message GetVehicleIdListReq {
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+}
+
+message GetVehicleIdListRes {
+  ErrorMsg error = 1;
+  repeated string id_list = 2;
+}
+
+message UpdateVehicleInfoReq {
+  string simulation_id = 1 [ (google.api.field_behavior) = REQUIRED ];
+  string vehicle_id = 2 [ (google.api.field_behavior) = REQUIRED ];
+  // 移动物体类型
+  MovingObj info = 3;
+  // 车辆控制
+  VehicleControl vehicle_control = 4;
+}
+
+message UpdateVehicleInfoRes {
+  ErrorMsg error = 1;
+  Vehicle vehicle = 2;
 }

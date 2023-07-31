@@ -26,7 +26,8 @@ class SimulationClient {
 
     // 调用 Start 方法
     StartSimulationReq request;
-    request.set_task_id(291);
+    request.set_task_id(3958);
+    request.set_record_id(1536);
     risenlighten::lasvsim::process_task::api::cosim::v1::StartSimulationRes response;
     Status status = stub_->Start(&context, request, &response);
     if (CheckError(status, response.error())) {
@@ -100,7 +101,7 @@ class SimulationClient {
 
 int main(int argc, char** argv) {
   SimulationClient client(
-      grpc::CreateChannel("localhost:9002", grpc::InsecureChannelCredentials()));
+      grpc::CreateChannel("qianxing-grpc.risenlighten.com:80", grpc::InsecureChannelCredentials()));
   client.Run();
   return 0;
 }

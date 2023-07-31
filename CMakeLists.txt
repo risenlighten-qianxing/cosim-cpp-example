@@ -74,6 +74,9 @@ foreach(_target
     google_api_field_behavior
     google_api_http
     google_api_httpbody
+    openapi_v3_annotations
+    openapi_v3_openapi
+    validate_validate
     risenlighten_lasvsim_process_task_api_cosim_v1_hdmap
     risenlighten_lasvsim_process_task_api_cosim_v1_simulation
     absl::flags
