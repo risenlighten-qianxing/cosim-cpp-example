@@ -25,7 +25,25 @@ string(REGEX REPLACE "/$" "" WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(./cmake/common.cmake)
 
-file(GLOB_RECURSE PROTOS protos/*.proto)
+# Manually add the proto files you want to process first
+set(PRIORITY_PROTOS
+    ${CMAKE_CURRENT_SOURCE_DIR}/protos/validate/validate.proto
+    ${CMAKE_CURRENT_SOURCE_DIR}/protos/google/api/http.proto
+    ${CMAKE_CURRENT_SOURCE_DIR}/protos/openapi/v3/openapi.proto
+    # path/to/your/priority_proto2.proto
+    # Add more priority proto files here if needed
+)
+
+# Add the rest of the proto files with GLOB_RECURSE
+file(GLOB_RECURSE REST_PROTOS ${CMAKE_CURRENT_SOURCE_DIR}/protos/*.proto)
+
+# Exclude priority proto files from the REST_PROTOS list
+list(REMOVE_ITEM REST_PROTOS ${PRIORITY_PROTOS})
+
+# Concatenate the two lists to get the final PROTOS list
+set(PROTOS ${PRIORITY_PROTOS} ${REST_PROTOS})
+
+# file(GLOB_RECURSE PROTOS protos/*.proto)
 foreach(PROTOFILE ${PROTOS})
   get_filename_component(FIL_WE ${PROTOFILE} NAME_WE)
   STRING(REGEX REPLACE "^${WORKSPACE}/protos/" "" RELATIVEPATH ${PROTOFILE}) # 移除字符串前缀
