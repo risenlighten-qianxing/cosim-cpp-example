@@ -38,6 +38,8 @@ class SimulationClient {
     }
 
     while (true) {
+          std::cout << ">>>>>：" << std::endl;
+
         // 获取自车以及自车的周车列表
         GetVehicleReq get_vehicle_request;
         get_vehicle_request.set_simulation_id(response.simulation_id());
@@ -102,6 +104,10 @@ class SimulationClient {
  private:
   std::unique_ptr<Cosim::Stub> stub_;
   bool CheckError(const Status& status,risenlighten::lasvsim::process_task::api::cosim::v1::ErrorMsg errmsg) {
+    if (status.error_code() != 0) {
+        std::cerr << "Status Error: " << status.error_message() << std::endl;
+        return true;
+    }
     if (errmsg.code() != 0) {
         std::cerr << "Error: " << errmsg.msg() << std::endl;
         return true;
