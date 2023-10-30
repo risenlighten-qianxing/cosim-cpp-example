@@ -5,7 +5,7 @@
             "includePath": [
                 // "${workspaceFolder}/cmake/build",
                 "/Users/sq_luozhihong/.local/include",
-                "${workspaceFolder}/.build"
+                "${workspaceFolder}/cmake/build"
                 // "${workspaceFolder}/include"
             ],
             "macFrameworkPath": [
