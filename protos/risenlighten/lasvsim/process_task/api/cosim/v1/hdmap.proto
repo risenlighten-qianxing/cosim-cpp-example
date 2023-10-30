@@ -9,6 +9,10 @@ message Point {
   double y = 2;
 }
 
+message Line {
+  repeated Point points = 1;
+}
+
 // 路口
 message Junction {
   uint64 map_id = 2;
